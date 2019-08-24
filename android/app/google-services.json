@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "570817183175",
+    "firebase_url": "https://todotr-34339.firebaseio.com",
+    "project_id": "todotr-34339",
+    "storage_bucket": "todotr-34339.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570817183175:android:17767be2ef977853",
+        "android_client_info": {
+          "package_name": "com.rn_trapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570817183175-s7hd0epfsmgl3eeevlnfo27l2fntr9vl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6ttG3DXEY64_0c6Cfp9sRfpCYBaW8cgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570817183175-s7hd0epfsmgl3eeevlnfo27l2fntr9vl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,16 +1,16 @@
 import React from 'react';
+import {Button, Text, View} from "react-native";
 
 export default class HomeScreen extends React.Component {
-    static navigationOptions = {
-        title: 'Welcome',
-    };
     render() {
-        const {navigate} = this.props.navigation;
         return (
-            <Button
-                title="Go to Jane's profile"
-                onPress={() => navigate('Profile', {name: 'Jane'})}
-            />
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text>Home Screen</Text>
+                <Button
+                    title="Go to Details"
+                    onPress={() => this.props.navigation.navigate('Details')}
+                />
+            </View>
         );
     }
 }
