@@ -1,18 +1,29 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
 
 import HomeScreen from './screens/HomeScreen';
 import DetailsScreen from './screens/DetailsScreen';
+import AuthScreen from "./screens/AuthScreen";
 
-const AppNavigator = createStackNavigator(
+const AuthStack = createStackNavigator(
     {
-        Home: HomeScreen,
-        Details: DetailsScreen
-    },
-    {
-        initialRouteName: "Home"
+        Auth: AuthScreen,
     }
 );
 
-export default createAppContainer(AppNavigator);
+const AppStack = createStackNavigator(
+    {
+        Home: HomeScreen,
+        Details: DetailsScreen,
+    }
+);
+
+export default createAppContainer(createSwitchNavigator(
+    {
+        App: AppStack,
+        Auth: AuthStack,
+    },
+    {
+        initialRouteName: 'Auth',
+    }
+));
