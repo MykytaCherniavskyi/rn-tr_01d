@@ -1,9 +1,19 @@
 import React from 'react';
-import {Button, View, SafeAreaView, ScrollView} from "react-native";
-import {Input, Item, Label, List, ListItem, Text} from "native-base";
+import {Button, View, SafeAreaView, ScrollView, StyleSheet, TouchableHighlight, RefreshControl} from "react-native";
+import {Input, Item, Label, List, ListItem, Text, CardItem} from "native-base";
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import {addNote, getNotes} from '../api/notes';
 import { signOut } from "../api/auth";
+
+function wait(timeout, callback) {
+    return new Promise(resolve => {
+        setTimeout(async () => {
+            await getNotes(callback);
+            resolve();
+        }, timeout);
+    });
+}
 
 export default class HomeScreen extends React.Component {
     static navigationOptions({ navigation }) {
@@ -27,6 +37,7 @@ export default class HomeScreen extends React.Component {
     state = {
         notes: [],
         currentNote: {},
+        refreshing: false,
     };
 
     onNoteAdded = note => {
@@ -48,8 +59,29 @@ export default class HomeScreen extends React.Component {
         getNotes(this.onNotesReceived);
     }
 
+    onEditNote = data => {
+        const { item: { noteTitle, note, noteId } } = data;
+        this.props.navigation.navigate('Draft', {
+            draftSubmit: this.onDraftSubmit,
+            editSubmit: this.onNotesReceived,
+            edit: true,
+            noteTitle,
+            noteId,
+            note,
+        });
+    };
+
+    onRefresh = () => {
+        this.setState(state => {
+            const { refreshing } = state;
+            return { refreshing: !refreshing };
+        }, () => {
+            wait(2000, this.onNotesReceived).then(() => this.setState({ refreshing: false }));
+        })
+    };
+
     render() {
-        const {notes, currentNote} = this.state;
+        const {notes, currentNote, refreshing} = this.state;
         console.log(notes, currentNote);
         return (
             <>
@@ -59,33 +91,46 @@ export default class HomeScreen extends React.Component {
                             this.props.navigation.navigate('Draft', {
                                 draftSubmit: this.onDraftSubmit,
                             });
-                            // addNote({
-                            //     title: currentNote.title,
-                            //     note: currentNote.note,
-                            // }, this.onNoteAdded)
                         }} />
                     </View>
                     <SafeAreaView>
-                        <ScrollView>
-                            <List>
-                                {
-                                    notes.length > 0 && notes.map((item, index) => (
-                                        <ListItem key={index}>
-                                            <Text>{item.note}</Text>
-                                        </ListItem>))
-                                }
-                            </List>
+                        <ScrollView refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />
+                        }>
+                            <SwipeListView
+                                style={{ paddingTop: 5, paddingRight: 10, paddingBottom: 10, paddingLeft: 10 }}
+                                data={notes}
+                                renderItem={ (data) => (
+                                    <TouchableHighlight onPress={() => this.onEditNote(data)}>
+                                        <CardItem style={{ borderBottomWidth: 1 }}>
+                                            <Text>{data.item.note}</Text>
+                                        </CardItem>
+                                    </TouchableHighlight>
+                                )}
+                            />
                         </ScrollView>
                     </SafeAreaView>
                 </View>
-{/*                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text>Home Screen</Text>
-                    <Button
-                        title="Go to Details"
-                        onPress={() => this.props.navigation.navigate('Details')}
-                    />
-                </View>*/}
             </>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    rowFront: {
+        // alignItems: 'center',
+        // backgroundColor: '#CCC',
+        // borderBottomColor: 'black',
+        // borderBottomWidth: 1,
+        // justifyContent: 'center',
+        // height: 50,
+    },
+    rowBack: {
+        // alignItems: 'center',
+        // backgroundColor: '#DDD',
+        // flex: 1,
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // paddingLeft: 15,
+    },
+});
